@@ -7,7 +7,45 @@ import EventsRepertory from "@/shared/components/EventsRepertory";
 import UpcomingEvents from "@/shared/components/UpcomingEvents";
 import ContactBoard from "@/shared/components/ContactBoard";
 
-export default function Home() {
+import { EventsService } from "@/shared/services/events.service";
+import { ClassesService } from "@/shared/services/classes.service";
+import { RepertoryService } from "@/shared/services/repertory.service";
+import { ContentsService } from "@/shared/services/contents.service";
+
+export default async function Home() {
+  let events = [];
+  let classes = [];
+  let repertory = [];
+  const contentsMap: Record<string, string> = {};
+
+  try {
+    const [eventsRes, classesRes, repertoryRes, contentsRes] = await Promise.all([
+      EventsService.getAll(),
+      ClassesService.getAll(),
+      RepertoryService.getAll(),
+      ContentsService.getAll(),
+    ]);
+
+    events = eventsRes || [];
+    classes = classesRes || [];
+    repertory = repertoryRes || [];
+
+    if (Array.isArray(contentsRes)) {
+      contentsRes.forEach((c) => {
+        contentsMap[c.key] = c.value;
+      });
+    }
+  } catch (error) {
+    console.error("Erro ao carregar dados do Supabase na Home:", error);
+    // Os fallbacks já estão tratados nos próprios sub-componentes!
+  }
+
+  // Obter valores dinâmicos com fallbacks seguros
+  const heroTitle = contentsMap.hero_title || "Sinta O Ritmo";
+  const heroSubtitle = contentsMap.hero_subtitle || "Jazz Musical";
+  const heroDescription = contentsMap.hero_description || "O palco é nosso compasso. A luz é nosso guia. Transformamos a técnica do jazz musical em expressões de arte inesquecíveis.";
+  const heroImageUrl = contentsMap.hero_image_url || "https://images.unsplash.com/photo-1508807526345-15e9b5f4eaff?q=80&w=800&auto=format&fit=crop";
+
   return (
     <main className="flex flex-col items-center justify-start min-h-screen pt-24 w-full">
       {/* Hero Section - Typographic Brutalism */}
@@ -33,15 +71,19 @@ export default function Home() {
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-0.5 bg-secondary" />
                         <p className="text-secondary font-mono tracking-widest uppercase text-sm md:text-base font-bold">
-                            Jazz Musical
+                            {heroSubtitle}
                         </p>
                     </div>
                     
-                    <h2 className="text-5xl md:text-8xl lg:text-[7rem] font-display font-bold leading-[0.85] uppercase text-foreground">
-                        Sinta <br /> O <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Ritmo</span>
-                    </h2>
+                    <h2 
+                      className="text-5xl md:text-8xl lg:text-[7rem] font-display font-bold leading-[0.85] uppercase text-foreground"
+                      dangerouslySetInnerHTML={{
+                        __html: heroTitle.replace(/(Ritmo)/gi, '<span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">$1</span>')
+                      }}
+                    />
+
                     <p className="text-tertiary-light text-lg md:text-xl max-w-md mt-2">
-                        O palco é nosso compasso. A luz é nosso guia. Transformamos a técnica do jazz musical em expressões de arte inesquecíveis.
+                        {heroDescription}
                     </p>
                     
                     {/* CTA */}
@@ -60,7 +102,7 @@ export default function Home() {
                      <div className="relative w-full max-w-xs md:max-w-md aspect-[4/5] border border-tertiary-dark/30 p-2 md:p-3 transform lg:rotate-2 hover:rotate-0 transition-transform duration-700">
                          <div className="w-full h-full relative overflow-hidden bg-background">
                              <Image 
-                                src="https://images.unsplash.com/photo-1508807526345-15e9b5f4eaff?q=80&w=800&auto=format&fit=crop" 
+                                src={heroImageUrl} 
                                 alt="Bailarina de Jazz" 
                                 fill
                                 className="object-cover mix-blend-luminosity opacity-80 hover:scale-105 transition-transform duration-1000"
@@ -82,9 +124,9 @@ export default function Home() {
       <AboutGroup />
       <AboutTimeline />
       <VideoShowcase />
-      <DanceClasses />
-      <EventsRepertory />
-      <UpcomingEvents />
+      <DanceClasses classes={classes} />
+      <EventsRepertory repertory={repertory} />
+      <UpcomingEvents events={events} />
       <ContactBoard />
       
     </main>

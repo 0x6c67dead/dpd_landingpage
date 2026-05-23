@@ -24,7 +24,22 @@ const REPERTORY_DATA = [
   }
 ];
 
-export default function EventsRepertory() {
+export interface RepertoryItem {
+  id?: string;
+  title: string;
+  subtitle: string;
+  image?: string;
+  image_url?: string;
+  updated_at?: string;
+}
+
+interface EventsRepertoryProps {
+  repertory?: RepertoryItem[];
+}
+
+export default function EventsRepertory({ repertory }: EventsRepertoryProps) {
+  const displayRepertory = repertory && repertory.length > 0 ? repertory : [];
+
   return (
     <section id="Eventos" className="w-full py-16 md:py-24 bg-background">
       <div className="container mx-auto px-5 md:px-12 lg:px-24">
@@ -38,22 +53,28 @@ export default function EventsRepertory() {
 
         {/* Masonry / Staggered Layout */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-16">
-          {REPERTORY_DATA.map((event, idx) => (
-             <motion.div
-               key={event.id}
-               initial={{ opacity: 0, y: 50 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true, margin: "-100px" }}
-               transition={{ duration: 0.8, delay: idx * 0.2 }}
-               className={`relative group ${
-                 idx === 0 ? "md:col-span-8 md:col-start-1" : 
-                 idx === 1 ? "md:col-span-6 md:col-start-7" : 
-                 "md:col-span-7 md:col-start-2"
-               }`}
-             >
-               <div className="relative aspect-video w-full overflow-hidden border border-tertiary-dark/30">
+          {displayRepertory.map((event, idx) => {
+            const rawUrl = event.image_url || event.image || "";
+            const imgUrl = rawUrl && event.updated_at
+              ? `${rawUrl}?t=${event.updated_at}`
+              : rawUrl;
+
+            return (
+              <motion.div
+                key={event.id || event.title}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8, delay: idx * 0.2 }}
+                className={`relative group ${
+                  idx === 0 ? "md:col-span-8 md:col-start-1" : 
+                  idx === 1 ? "md:col-span-6 md:col-start-7" : 
+                  "md:col-span-7 md:col-start-2"
+                }`}
+              >
+                <div className="relative aspect-video w-full overflow-hidden border border-tertiary-dark/30">
                   <Image 
-                    src={event.image}
+                    src={imgUrl || "/placeholder.jpg"}
                     alt={event.title}
                     fill
                     className="object-cover transition-transform duration-1000 group-hover:scale-110 grayscale group-hover:grayscale-0"
@@ -63,16 +84,17 @@ export default function EventsRepertory() {
                   
                   {/* Info Overlay */}
                   <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10 z-10 overflow-hidden pr-4">
-                     <p className="text-secondary font-mono text-xs md:text-sm tracking-widest uppercase mb-2 transform md:translate-y-full md:opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">
-                        {event.subtitle}
-                     </p>
-                     <h3 className="text-2xl sm:text-3xl md:text-5xl font-display font-bold text-foreground uppercase transform md:translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                        {event.title}
-                     </h3>
+                    <p className="text-secondary font-mono text-xs md:text-sm tracking-widest uppercase mb-2 transform md:translate-y-full md:opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">
+                      {event.subtitle}
+                    </p>
+                    <h3 className="text-2xl sm:text-3xl md:text-5xl font-display font-bold text-foreground uppercase transform md:translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                      {event.title}
+                    </h3>
                   </div>
-               </div>
-             </motion.div>
-          ))}
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
 
       </div>

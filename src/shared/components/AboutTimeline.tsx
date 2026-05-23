@@ -4,7 +4,14 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
-const TIMELINE_DATA = [
+export interface TimelineItem {
+  year: number;
+  title: string;
+  description: string;
+  photo: string;
+}
+
+const DEFAULTS: TimelineItem[] = [
   {
     year: 2016,
     title: "O Blog",
@@ -38,18 +45,32 @@ const TIMELINE_DATA = [
 ];
 
 export default function AboutTimeline() {
+  const [timelineData, setTimelineData] = useState<TimelineItem[]>(DEFAULTS);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
+    fetch("/api/admin/contents")
+      .then((r) => r.json())
+      .then((contents: Array<{ key: string; value: string }>) => {
+        if (!Array.isArray(contents)) return;
+        const item = contents.find((c) => c.key === "timeline_items");
+        if (!item) return;
+        const parsed = JSON.parse(item.value) as TimelineItem[];
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setTimelineData(parsed);
+        }
+      })
+      .catch(() => {}); // Silently fall back to defaults
+  }, []);
+
+  useEffect(() => {
     if (isPaused) return;
-
     const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % TIMELINE_DATA.length);
+      setActiveIndex((prev) => (prev + 1) % timelineData.length);
     }, 6000);
-
     return () => clearInterval(interval);
-  }, [isPaused]);
+  }, [isPaused, timelineData.length]);
 
   const handleManualClick = (index: number) => {
     setActiveIndex(index);
@@ -61,14 +82,14 @@ export default function AboutTimeline() {
         {/* Background Year Texture */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] pointer-events-none z-0">
           <motion.h2 
-            key={TIMELINE_DATA[activeIndex].year}
+            key={timelineData[activeIndex]?.year}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1 }}
             className="text-[25vw] font-display font-bold leading-none text-tertiary-light select-none whitespace-nowrap"
           >
-            {TIMELINE_DATA[activeIndex].year}
+            {timelineData[activeIndex]?.year}
           </motion.h2>
         </div>
 
@@ -86,8 +107,8 @@ export default function AboutTimeline() {
                   className="w-full h-full relative"
                 >
                   <Image 
-                    src={TIMELINE_DATA[activeIndex].photo} 
-                    alt={TIMELINE_DATA[activeIndex].title}
+                    src={timelineData[activeIndex]?.photo} 
+                    alt={timelineData[activeIndex]?.title}
                     fill
                     className="object-cover grayscale hover:grayscale-0 transition-colors duration-700 pointer-events-auto"
                     unoptimized
@@ -104,7 +125,7 @@ export default function AboutTimeline() {
               
               {/* Timeline controls */}
               <div className="flex gap-3 md:gap-6 items-end border-b border-tertiary-dark/20 w-full md:w-fit pb-2 overflow-x-auto scrollbar-none">
-                  {TIMELINE_DATA.map((item, idx) => (
+                  {timelineData.map((item, idx) => (
                       <button 
                         key={item.year}
                         onClick={() => handleManualClick(idx)}
@@ -133,10 +154,10 @@ export default function AboutTimeline() {
                   className="flex flex-col gap-6"
                 >
                   <h3 className="text-3xl md:text-5xl lg:text-7xl font-display font-bold leading-none text-foreground tracking-tighter">
-                    {TIMELINE_DATA[activeIndex].title}
+                    {timelineData[activeIndex]?.title}
                   </h3>
                   <p className="text-lg md:text-xl text-tertiary-light max-w-md leading-relaxed border-l-2 border-secondary pl-4">
-                    {TIMELINE_DATA[activeIndex].description}
+                    {timelineData[activeIndex]?.description}
                   </p>
                 </motion.div>
               </AnimatePresence>

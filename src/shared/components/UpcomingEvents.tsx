@@ -38,13 +38,52 @@ function TicketPerforationDots() {
   );
 }
 
-export default function UpcomingEvents() {
+export interface EventItem {
+  id?: string;
+  date_day?: string;
+  date_month?: string;
+  date_year?: string;
+  date?: {
+    day: string;
+    month: string;
+    year: string;
+  };
+  title: string;
+  location: string;
+  type: string;
+  theme?: string | null;
+  teacher?: string | null;
+  ticket_url?: string | null;
+  ticketUrl?: string | null;
+}
+
+interface UpcomingEventsProps {
+  events?: EventItem[];
+}
+
+export default function UpcomingEvents({ events }: UpcomingEventsProps) {
+  // Normalize items to consistent structure
+  const rawEvents = events && events.length > 0 ? events : UPCOMING_EVENTS;
+
+  const normalizedEvents = rawEvents.map(e => {
+    const day = e.date?.day || "";
+    const month = e.date?.month || "";
+    const year = e.date?.year || "";
+    const ticketUrl = e.ticketUrl || null;
+
+    return {
+      ...e,
+      date: { day, month, year },
+      ticketUrl,
+    };
+  });
+
   // Sort events chronologically: Year -> Month -> Day
-  const sortedEvents = [...UPCOMING_EVENTS].sort((a, b) => {
+  const sortedEvents = [...normalizedEvents].sort((a, b) => {
     const yearDiff = parseInt(a.date.year) - parseInt(b.date.year);
     if (yearDiff !== 0) return yearDiff;
     
-    const monthDiff = MONTH_MAP[a.date.month] - MONTH_MAP[b.date.month];
+    const monthDiff = (MONTH_MAP[a.date.month] || 0) - (MONTH_MAP[b.date.month] || 0);
     if (monthDiff !== 0) return monthDiff;
     
     return parseInt(a.date.day) - parseInt(b.date.day);
@@ -70,7 +109,7 @@ export default function UpcomingEvents() {
               
               return (
                 <motion.div
-                  key={event.id}
+                  key={event.id || event.title}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
