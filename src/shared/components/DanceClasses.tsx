@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 
-const WHATSAPP_NUMBER = "5500000000000"; // TODO: Substituir pelo número real
+const WHATSAPP_NUMBER = "+558192138092"; // TODO: Substituir pelo número real
 
 export interface DanceClassItem {
   id?: string;
