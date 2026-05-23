@@ -1,46 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
-interface VideoData {
-  video_url: string;
-  video_poster_url: string;
-  video_title: string;
-  video_subtitle: string;
-  video_description: string;
-}
-
-const DEFAULTS: VideoData = {
-  video_url: "https://videos.pexels.com/video-files/4922984/4922984-uhd_2560_1440_24fps.mp4",
-  video_poster_url: "https://images.unsplash.com/photo-1508807526345-15e9b5f4eaff?q=80&w=1200&auto=format&fit=crop",
-  video_title: "O Palco É Nosso.",
-  video_subtitle: "Dançando Por Dentro",
-  video_description: "Cada corpo que sobe ao palco carrega uma história que o mundo disse que não merecia ser contada. Nós contamos mesmo assim.",
-};
-
 export default function VideoShowcase() {
-  const [data, setData] = useState<VideoData>(DEFAULTS);
-
-  useEffect(() => {
-    fetch("/api/admin/contents")
-      .then((r) => r.json())
-      .then((contents: Array<{ key: string; value: string }>) => {
-        if (!Array.isArray(contents)) return;
-        const map: Record<string, string> = {};
-        contents.forEach((c) => { map[c.key] = c.value; });
-
-        setData({
-          video_url: map["video_url"] || DEFAULTS.video_url,
-          video_poster_url: map["video_poster_url"] || DEFAULTS.video_poster_url,
-          video_title: map["video_title"] || DEFAULTS.video_title,
-          video_subtitle: map["video_subtitle"] || DEFAULTS.video_subtitle,
-          video_description: map["video_description"] || DEFAULTS.video_description,
-        });
-      })
-      .catch(() => {}); // Silently fall back to defaults on error
-  }, []);
-
   return (
     <section className="relative w-full h-[60vh] md:h-[80vh] overflow-hidden flex items-center justify-center">
       {/* Video Background */}
@@ -49,11 +11,13 @@ export default function VideoShowcase() {
         muted
         loop
         playsInline
-        key={data.video_url}
         className="absolute inset-0 w-full h-full object-cover grayscale opacity-40"
-        poster={data.video_poster_url}
+        poster="/video-show-case.mp4"
       >
-        <source src={data.video_url} type="video/mp4" />
+        <source
+          src="/video-show-case.mp4"
+          type="video/mp4"
+        />
       </video>
 
       {/* Grain Overlay */}
@@ -78,16 +42,16 @@ export default function VideoShowcase() {
           className="flex flex-col items-center gap-6"
         >
           <p className="text-secondary font-mono tracking-[0.3em] uppercase text-xs sm:text-sm font-bold">
-            {data.video_subtitle}
+            Dançando Por Dentro
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-8xl font-display font-black uppercase leading-[0.9] tracking-tighter text-foreground max-w-4xl">
-            {data.video_title}{" "}
+            Aqui Dançar é estar em {" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-              A Luta É De Todos.
+              casa.
             </span>
           </h2>
           <p className="text-tertiary-light text-base md:text-lg max-w-xl mt-2 leading-relaxed">
-            {data.video_description}
+            Cada corpo que sobe ao palco carrega uma história que o mundo disse que não merecia ser contada. Nós contamos mesmo assim.
           </p>
           <div className="mt-6 flex flex-col sm:flex-row items-center gap-4 sm:gap-8">
             <a

@@ -58,7 +58,7 @@ export default function DanceClasses({ classes }: DanceClassesProps) {
             </span>
           </h2>
           <p className="text-tertiary-light text-lg md:text-xl max-w-2xl mt-6 leading-relaxed">
-            Não existe corpo errado para dançar. Desde 2016, abrimos espaço para todas as 
+            Não existe corpo errado para dançar. Desde 2022, abrimos espaço para todas as 
             idades e biotipos que já ouviram que &ldquo;não poderiam&rdquo; fazer parte de um espetáculo. 
             Idade mínima: 14 anos (menores com autorização dos responsáveis).
           </p>

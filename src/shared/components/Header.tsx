@@ -33,9 +33,9 @@ export default function Header() {
     return (
         <header className="fixed top-0 w-full z-50 flex flex-col bg-background/80 backdrop-blur-md border-b border-tertiary-dark/20">
             {/* Top bar */}
-            <div className="flex flex-row justify-between items-center px-6 md:px-12 lg:px-24 py-4">
+            <div className="flex flex-row justify-between items-center px-6 md:px-12 lg:px-24 py-2">
                 <Link href="#" className="flex-shrink-0">
-                    <Image src="/logo.png" alt="Logo" width={80} height={80} className="transition-transform hover:scale-105 duration-300 w-14 h-14 md:w-20 md:h-20" />
+                    <Image src="/logo-preta.png" alt="Logo" width={80} height={80} className="transition-transform rounded-full hover:scale-105 hover:shadow-2xl hover:shadow-secondary/50 duration-300 w-14 h-14 md:w-20 md:h-20" />
                 </Link>
 
                 {/* Desktop nav */}

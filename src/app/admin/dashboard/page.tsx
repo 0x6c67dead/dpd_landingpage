@@ -878,6 +878,8 @@ export default function AdminDashboard() {
                     >
                       <option value="Workshop">Workshop</option>
                       <option value="Competição">Competição</option>
+                      <option value="Espetáculo">Espetáculo</option>
+                      <option value="Mostra">Mostra</option>
                     </select>
                   </div>
                   <div className="flex flex-col gap-1">

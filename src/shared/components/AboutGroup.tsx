@@ -30,11 +30,11 @@ export default function AboutGroup() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-display font-bold leading-[1.1] text-foreground"
           >
-            "A dança não é sobre a ausência de gravidade, mas sobre a{' '}
+            "Dançar é um meio de{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary italic">
-               intensidade
+               respiro e liberdade
             </span>{' '}
-            com que tocamos o chão."
+            para o corpo."
           </motion.blockquote>
           
           <motion.div 
@@ -65,7 +65,7 @@ export default function AboutGroup() {
                className="bg-foreground relative lg:absolute lg:-bottom-16 lg:-left-10 z-20 p-6 md:p-8 max-w-sm border-r-4 border-b-4 border-primary shadow-2xl order-2 lg:order-none -mt-6 lg:mt-0 mx-auto lg:mx-0"
             >
                <p className="text-background font-medium text-sm sm:text-base leading-relaxed">
-                  Não somos apenas um corpo de baile. Somos um coletivo focado em explorar os limites do jazz musical, trazendo teatralidade, técnica absurda e entrega emocional para cada segundo de palco.
+                  Não somos apenas um grupo de dança. Somos um coletivo focado em explorar os limites do jazz musical, trazendo teatralidade, técnica e entrega emocional para cada segundo de palco.
                </p>
             </motion.div>
 
@@ -79,7 +79,7 @@ export default function AboutGroup() {
             >
                <div className="w-full h-full relative group">
                   <Image 
-                     src="/hero_img.jpeg" 
+                     src="/essencia-do-grupo.jpeg" 
                      alt="Juliana Fernandes - Diretora do Grupo" 
                      fill
                      className="object-cover mix-blend-luminosity opacity-80 group-hover:scale-105 group-hover:grayscale-0 transition-all duration-700"
