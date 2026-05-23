@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { sendContactEmail } from "@/shared/hooks/sendContactEmail";
 
 export default function ContactBoard() {
   return (
@@ -33,23 +34,40 @@ export default function ContactBoard() {
           <div className="absolute top-0 left-0 w-4 h-4 bg-primary -translate-x-1/2 -translate-y-1/2" />
           <div className="absolute bottom-0 right-0 w-4 h-4 bg-secondary translate-x-1/2 translate-y-1/2" />
 
-          <form className="flex flex-col gap-8" onSubmit={(e) => e.preventDefault()}>
+          <form className="flex flex-col gap-8" action={sendContactEmail}>
             <div className="flex flex-col gap-2">
               <label className="text-xs font-mono text-tertiary uppercase tracking-widest">Seu Nome</label>
-              <input type="text" className="w-full bg-transparent border-b border-tertiary hover:border-primary focus:border-secondary transition-colors outline-none py-2 text-foreground font-sans text-lg" placeholder="Como gosta de ser chamado?" />
+              <input id="name" name="name" type="text" required className="w-full bg-transparent border-b border-tertiary hover:border-primary focus:border-secondary transition-colors outline-none py-2 text-foreground font-sans text-lg" placeholder="Como gosta de ser chamado?" />
             </div>
             
             <div className="flex flex-col gap-2">
               <label className="text-xs font-mono text-tertiary uppercase tracking-widest">E-mail</label>
-              <input type="email" className="w-full bg-transparent border-b border-tertiary hover:border-primary focus:border-secondary transition-colors outline-none py-2 text-foreground font-sans text-lg" placeholder="contato@exemplo.com" />
+              <input id="email" name="email" type="email" required className="w-full bg-transparent border-b border-tertiary hover:border-primary focus:border-secondary transition-colors outline-none py-2 text-foreground font-sans text-lg" placeholder="contato@exemplo.com" />
             </div>
 
             <div className="flex flex-col gap-2">
               <label className="text-xs font-mono text-tertiary uppercase tracking-widest">O que deseja?</label>
-              <textarea rows={3} className="w-full bg-transparent border-b border-tertiary hover:border-primary focus:border-secondary transition-colors outline-none py-2 text-foreground font-sans text-lg resize-none" placeholder="Quero participar do grupo, convite para evento, etc..."></textarea>
+              <textarea id="message" name="message" rows={5} required className="w-full bg-transparent border-b border-tertiary hover:border-primary focus:border-secondary transition-colors outline-none py-2 text-foreground font-sans text-lg resize-none" placeholder="Quero participar do grupo, convite para evento, etc..."></textarea>
             </div>
 
-            <button className="self-stretch sm:self-end mt-4 px-10 py-4 bg-foreground text-background font-display font-bold uppercase tracking-widest transition-colors duration-300 relative group overflow-hidden">
+            <input
+              type="text"
+              id="website"
+              name="website"
+              className="hidden"
+              tabIndex={-1}
+              autoComplete="off"
+            />
+
+            <div className="absolute left-[-9999px]">
+              <input
+                name="middleName"
+                autoComplete="off"
+                tabIndex={-1}
+              />
+            </div>
+
+            <button type="submit" className="cursor-pointer self-stretch sm:self-end mt-4 px-10 py-4 bg-foreground text-background font-display font-bold uppercase tracking-widest transition-colors duration-300 relative group overflow-hidden">
                <span className="relative z-10 group-hover:text-background transition-colors duration-300">Enviar Mensagem</span>
                <div className="absolute inset-0 bg-primary transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-500 z-0" />
             </button>

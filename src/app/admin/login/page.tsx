@@ -4,17 +4,28 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/shared/lib/supabase-client";
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const random = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [website, setWebsite] = useState("");
+  const [middleName, setMiddleName] = useState("");
+  
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    await sleep(random(800, 2000));
+
     setLoading(true);
     setErrorMsg("");
+
+    if(website || middleName) return
 
     try {
       const supabase = createClient();
@@ -96,6 +107,16 @@ export default function AdminLogin() {
               placeholder="••••••••"
             />
           </div>
+
+          <div className="absolute left-[-9999px]">
+            <input
+              name="middleName"
+              autoComplete="off"
+              tabIndex={-1}
+            />
+          </div>
+
+          <input type="text" id="website" name="website" tabIndex={-1} autoComplete="off" className="hidden" />
 
           {/* Submit Button */}
           <button
